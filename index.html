@@ -1,11 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Josef Schlienger</title>
+    <meta charset="UTF-8">
+    <title>Balance Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        canvas {
+            max-width: 1000px;
+            margin: auto;
+            display: block;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
-  <h1>Hallo, ich bin Josef</h1>
-  <p>Willkommen auf meiner persönlichen Website!</p>
+    <h1>Live Balance Tracker</h1>
+    <canvas id="balanceChart" width="1000" height="500"></canvas>
+
+    <script>
+        async function fetchCSV() {
+            const response = await fetch('balance.csv');
+            const data = await response.text();
+            const lines = data.trim().split('\n').slice(1); // skip header
+            const labels = [];
+            const balances = [];
+
+            lines.forEach(line => {
+                const [timestamp, balance] = line.split(',');
+                labels.push(timestamp);
+                balances.push(parseFloat(balance));
+            });
+
+            return { labels, balances };
+        }
+
+        async function renderChart() {
+            const ctx = document.getElementById('balanceChart').getContext('2d');
+            const data = await fetchCSV();
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Account Balance',
+                        data: data.balances,
+                        borderWidth: 2,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.3,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            ticks: {
+                                maxTicksLimit: 10,
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        },
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+        }
+
+        renderChart();
+    </script>
 </body>
 </html>
