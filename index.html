@@ -21,11 +21,26 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
+        iframe {
+            display: block;
+            margin: 40px auto 10px auto;
+            border: 1px solid #ccc;
+        }
+        a {
+            text-align: center;
+            display: block;
+            margin-bottom: 40px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
     <h1>Live Balance Tracker</h1>
     <canvas id="balanceChart" width="1000" height="500"></canvas>
+
+    <h2 style="text-align:center; margin-top: 40px;">Trade Report (PDF)</h2>
+    <iframe src="trade_report.pdf" width="1000" height="600"></iframe>
+    <a href="trade_report.pdf" target="_blank">➤ Trade Report direkt im neuen Tab öffnen</a>
 
     <script>
         async function fetchCSV() {
